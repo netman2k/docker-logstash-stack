@@ -1,0 +1,39 @@
+version: "3.4"
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:5.6.10
+    ports:
+      - "514:5000"
+      - "514:5000/udp"
+    configs:
+      - source: logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+      - source: syslog.conf
+        target: /usr/share/logstash/pipeline/syslog.conf
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - elasticsearch
+      - kafka
+
+configs:
+  logstash.yml:
+    file: ./settings/logstash.yml
+  syslog.conf:
+    file: ./pipeline/syslog.conf
+
+networks:
+  elasticsearch:
+    external: 
+      name: ${ELASTICSEARCH_NETWORK_NAME:-elasticsearch}
+  kafka:
+    external:
+      name: ${KAFKA_NETWORK_NAME:-kafka}
