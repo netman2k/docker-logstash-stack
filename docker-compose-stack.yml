@@ -6,9 +6,9 @@ services:
       - "514:5000"
       - "514:5000/udp"
     configs:
-      - source: logstash.yml
+      - source: logstash-yml-v1
         target: /usr/share/logstash/config/logstash.yml
-      - source: syslog.conf
+      - source: syslog-conf-v1
         target: /usr/share/logstash/pipeline/syslog.conf
     deploy:
       replicas: 3
@@ -25,9 +25,9 @@ services:
       - kafka
 
 configs:
-  logstash.yml:
+  logstash-yml-v1:
     file: ./settings/logstash.yml
-  syslog.conf:
+  syslog-conf-v1:
     file: ./pipeline/syslog.conf
 
 networks:
