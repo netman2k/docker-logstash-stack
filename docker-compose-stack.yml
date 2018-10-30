@@ -2,6 +2,11 @@ version: "3.4"
 services:
   logstash:
     image: docker.elastic.co/logstash/logstash:5.6.10
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - elasticsearch
+      - kafka
     ports:
       - "514:5000"
       - "514:5000/udp"
@@ -17,13 +22,14 @@ services:
         delay: 20s
       restart_policy:
         condition: on-failure
+      #resources:
+      #  limits:
+      #    cpus: '0.30'
+      #  reservations:
+      #    cpus: '0.40'
       placement:
         constraints:
           - node.role == worker
-    networks:
-      - elasticsearch
-      - kafka
-
 configs:
   logstash-yml-v1:
     file: ./settings/logstash.yml
