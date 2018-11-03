@@ -6,7 +6,6 @@ services:
       TZ: Asia/Seoul
     networks:
       - logstash
-      - elasticsearch
       - kafka
       - monitoring
     ports:
@@ -49,9 +48,6 @@ networks:
   logstash:
     external: 
       name: ${LOGSTASH_NETWORK_NAME:-logstash}
-  elasticsearch:
-    external: 
-      name: ${ELASTICSEARCH_NETWORK_NAME:-elasticsearch}
   kafka:
     external:
       name: ${KAFKA_NETWORK_NAME:-kafka}
