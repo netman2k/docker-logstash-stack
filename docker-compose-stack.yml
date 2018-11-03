@@ -5,8 +5,10 @@ services:
     environment:
       TZ: Asia/Seoul
     networks:
+      - logstash
       - elasticsearch
       - kafka
+      - monitoring
     ports:
       - "514:5000"
       - "514:5000/udp"
@@ -30,6 +32,13 @@ services:
       placement:
         constraints:
           - node.role == worker
+  logstash-exporter:
+    image: bonniernews/logstash_exporter:v0.1.2
+    command: '--web.listen-address=":9198" --logstash.endpoint="http://tasks.logstash:9600"'
+    networks:
+      - logstash
+      - monitoring
+      
 configs:
   logstash-yml-v1:
     file: ./settings/logstash.yml
@@ -37,9 +46,15 @@ configs:
     file: ./pipeline/syslog.conf
 
 networks:
+  logstash:
+    external: 
+      name: ${LOGSTASH_NETWORK_NAME:-logstash}
   elasticsearch:
     external: 
       name: ${ELASTICSEARCH_NETWORK_NAME:-elasticsearch}
   kafka:
     external:
       name: ${KAFKA_NETWORK_NAME:-kafka}
+  monitoring:
+    external:
+      name: ${MONITORING_NETWORK_NAME:-monitoring}
