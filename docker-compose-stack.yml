@@ -1,7 +1,8 @@
 version: "3.4"
 services:
   logstash:
-    image: docker.elastic.co/logstash/logstash:5.6.10
+    #image: docker.elastic.co/logstash/logstash:5.6.10
+    image: daehyung/logstash-gelf:6.4.2
     environment:
       TZ: Asia/Seoul
     networks:
@@ -15,7 +16,7 @@ services:
     configs:
       - source: logstash-yml-v1
         target: /usr/share/logstash/config/logstash.yml
-      - source: syslog-conf-v1
+      - source: syslog-graylog-conf-v1
         target: /usr/share/logstash/pipeline/syslog.conf
     deploy:
       replicas: 3
@@ -42,8 +43,10 @@ services:
 configs:
   logstash-yml-v1:
     file: ./settings/logstash.yml
-  syslog-conf-v1:
-    file: ./pipeline/syslog.conf
+  syslog-kafka-conf-v1:
+    file: ./pipeline/syslog-kafka.conf
+  syslog-graylog-conf-v1:
+    file: ./pipeline/syslog-graylog.conf
 
 networks:
   logstash:
