@@ -5,7 +5,6 @@ services:
     environment:
       TZ: Asia/Seoul
     networks:
-      - logstash
       - kafka
       - monitoring
     ports:
@@ -35,7 +34,6 @@ services:
     image: bonniernews/logstash_exporter:v0.1.2
     command: '--web.listen-address=":9198" --logstash.endpoint="http://tasks.logstash:9600"'
     networks:
-      - logstash
       - monitoring
       
 configs:
@@ -45,9 +43,6 @@ configs:
     file: ./pipeline/syslog-kafka.conf
 
 networks:
-  logstash:
-    external: 
-      name: ${LOGSTASH_NETWORK_NAME:-logstash}
   kafka:
     external:
       name: ${KAFKA_NETWORK_NAME:-kafka}
